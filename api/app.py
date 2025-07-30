@@ -9,6 +9,15 @@ from openai import OpenAI
 import os
 from typing import Optional
 
+# Load environment variables from .env file only in development
+if os.getenv("ENV") != "production":
+    try:
+        from dotenv import load_dotenv
+        load_dotenv()
+    except ImportError:
+        # python-dotenv not available, skip loading .env
+        pass
+
 # Initialize FastAPI application with a title
 app = FastAPI(title="OpenAI Chat API")
 
@@ -28,17 +37,22 @@ class ChatRequest(BaseModel):
     developer_message: str  # Message from the developer/system
     user_message: str      # Message from the user
     model: Optional[str] = "gpt-4.1-mini"  # Optional model selection with default
-    api_key: str          # OpenAI API key for authentication
+    api_key: Optional[str] = None          # Optional OpenAI API key (can use env var)
 
 # Define the main chat endpoint that handles POST requests
 @app.post("/api/chat")
 async def chat(request: ChatRequest):
     try:
-        # Initialize OpenAI client with the provided API key
-        client = OpenAI(api_key=request.api_key)
+        # Use API key from request or environment variable
+        api_key = request.api_key or os.getenv("OPEN_API_KEY")
+        if not api_key:
+            raise HTTPException(status_code=400, detail="API key is required")
         
-        # Create an async generator function for streaming responses
-        async def generate():
+        # Initialize OpenAI client with the API key
+        client = OpenAI(api_key=api_key)
+        
+        # Test the API call first to catch errors before streaming
+        try:
             # Create a streaming chat completion request
             stream = client.chat.completions.create(
                 model=request.model,
@@ -48,7 +62,28 @@ async def chat(request: ChatRequest):
                 ],
                 stream=True  # Enable streaming response
             )
+        except Exception as openai_error:
+            # Handle OpenAI-specific errors before streaming starts
+            error_message = str(openai_error)
             
+            if "RateLimitError" in str(type(openai_error)) or "429" in error_message:
+                if "insufficient_quota" in error_message.lower():
+                    error_message = "OpenAI API quota exceeded. You need to add a payment method and upgrade to a paid plan at https://platform.openai.com/account/billing"
+                elif "billing_hard_limit_reached" in error_message.lower():
+                    error_message = "OpenAI billing limit reached. Please add a payment method at https://platform.openai.com/account/billing"
+                else:
+                    error_message = "OpenAI API access denied. You need to add a payment method to use the API, even with free credits. Visit https://platform.openai.com/account/billing"
+            elif "AuthenticationError" in str(type(openai_error)) or "401" in error_message:
+                error_message = "Invalid API key. Please check your OpenAI API key."
+            elif "InvalidRequestError" in str(type(openai_error)):
+                error_message = f"Invalid request: {error_message}"
+            else:
+                error_message = f"OpenAI API error: {error_message}"
+            
+            raise HTTPException(status_code=500, detail=error_message)
+        
+        # Create an async generator function for streaming responses
+        async def generate():
             # Yield each chunk of the response as it becomes available
             for chunk in stream:
                 if chunk.choices[0].delta.content is not None:
@@ -57,9 +92,13 @@ async def chat(request: ChatRequest):
         # Return a streaming response to the client
         return StreamingResponse(generate(), media_type="text/plain")
     
+    except HTTPException:
+        # Re-raise HTTP exceptions (these are handled properly by FastAPI)
+        raise
     except Exception as e:
-        # Handle any errors that occur during processing
-        raise HTTPException(status_code=500, detail=str(e))
+        # Handle any other unexpected errors
+        error_message = f"An unexpected error occurred: {str(e)}"
+        raise HTTPException(status_code=500, detail=error_message)
 
 # Define a health check endpoint to verify API status
 @app.get("/api/health")

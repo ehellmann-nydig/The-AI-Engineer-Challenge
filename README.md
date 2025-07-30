@@ -107,21 +107,69 @@ While it is a bit counter-intuitive to set things up before jumping into vibe-co
 </details>
 
 <details>
-  <summary>😎 Vibe Coding a Front End for the FastAPI Backend</summary>
+  <summary>😎 Running the Complete AI Chat Application</summary>
 
-1. Use `Command-L` or `CTRL-L` to open the Cursor chat console. 
+Great news! A complete frontend has been created for your FastAPI backend. You now have a modern, responsive web interface for your AI chat application.
 
-2. Set the chat settings to the following:
+## Quick Start Options
 
-     ![image](https://i.imgur.com/LSgRSgF.png)
+### Option 1: Run Both Backend and Frontend (Recommended)
 
-3. Ask Cursor to create a frontend for your application. Iterate as much as you like!
+Use the convenient development script that starts both servers:
 
-4. Run the frontend using the instructions Cursor provided. 
+```bash
+python run_dev.py
+```
+
+This will:
+- Start the FastAPI backend on `http://localhost:8000`
+- Start the frontend on `http://localhost:3000` 
+- Automatically open your browser to the chat interface
+
+### Option 2: Run Everything on One Port (Production Mode)
+
+```bash
+python run_prod.py
+```
+
+This serves both the API and frontend on `http://localhost:8000`
+
+### Option 3: Manual Setup
+
+1. **Start the Backend** (in one terminal):
+   ```bash
+   cd api
+   python app.py
+   ```
+
+2. **Start the Frontend** (in another terminal):
+   ```bash
+   cd frontend
+   python -m http.server 8080
+   ```
+
+3. **Open your browser** to `http://localhost:3000`
+
+## Using the Application
+
+1. **Configure your API Key**: Click the ⚙️ Settings button and enter your OpenAI API key
+2. **Choose your Model**: Select from GPT-4.1 Mini, GPT-4, or GPT-3.5 Turbo
+3. **Customize the AI**: Modify the system message to change the AI's behavior
+4. **Start Chatting**: Type your message and press Enter or click send
+5. **Watch Streaming Responses**: See the AI's response appear in real-time
+
+## Features
+
+- 🎨 **Modern UI**: Beautiful gradient design with smooth animations
+- ⚡ **Real-time Streaming**: Watch responses appear as they're generated
+- 📱 **Responsive**: Works perfectly on desktop and mobile
+- ⚙️ **Configurable**: Easy settings panel for all options
+- 💾 **Persistent Settings**: Your configuration is saved locally
+- 🔒 **Secure**: Your API key stays in your browser
 
 > NOTE: If you run into any errors, copy and paste them back into the Cursor chat window - and ask Cursor to fix them!
 
-> NOTE: You have been provided with a backend in the `/api` folder - please ensure your Front End integrates with it!
+> NOTE: The frontend is fully integrated with the `/api` folder backend!
 
 </details>
 
