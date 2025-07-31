@@ -40,7 +40,7 @@ class ChatRequest(BaseModel):
     api_key: Optional[str] = None          # Optional OpenAI API key (can use env var)
 
 # Define the main chat endpoint that handles POST requests
-@app.post("/api/chat")
+@app.post("/chat")
 async def chat(request: ChatRequest):
     try:
         # Use API key from request or environment variable
@@ -100,8 +100,13 @@ async def chat(request: ChatRequest):
         error_message = f"An unexpected error occurred: {str(e)}"
         raise HTTPException(status_code=500, detail=error_message)
 
+# Define a root API endpoint
+@app.get("/")
+async def root():
+    return {"message": "OpenAI Chat API", "status": "running", "endpoints": ["/chat", "/health"]}
+
 # Define a health check endpoint to verify API status
-@app.get("/api/health")
+@app.get("/health")
 async def health_check():
     return {"status": "ok"}
 
