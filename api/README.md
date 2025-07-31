@@ -4,33 +4,44 @@ This is a FastAPI-based backend service that provides a streaming chat interface
 
 ## Prerequisites
 
-- Python 3.8 or higher
-- pip (Python package manager)
+- Python 3.13 or higher
+- uv (package manager) - see project root for setup
 - An OpenAI API key
 
 ## Setup
 
-1. Create a virtual environment (recommended):
+This API is part of the main project and uses `uv` for dependency management. Dependencies are managed in the root `pyproject.toml` file.
+
+From the project root directory:
+
+1. Install dependencies:
 ```bash
-python -m venv venv
-source venv/bin/activate  # On Windows, use: venv\Scripts\activate
+uv sync
 ```
 
-2. Install the required dependencies:
+2. Set up environment variables (development):
 ```bash
-pip install fastapi uvicorn openai pydantic
+# Create/edit .env file in project root
+OPEN_API_KEY=your-openai-api-key-here
 ```
 
 ## Running the Server
 
-1. Make sure you're in the `api` directory:
+### Development Mode (Recommended)
+From the project root:
 ```bash
-cd api
+python run_dev.py
+```
+This starts both the API server and frontend.
+
+### API Only
+```bash
+uv run uvicorn api.app:app --host 0.0.0.0 --port 8000 --reload
 ```
 
-2. Start the server:
+### Production Mode
 ```bash
-python app.py
+python run_prod.py
 ```
 
 The server will start on `http://localhost:8000`

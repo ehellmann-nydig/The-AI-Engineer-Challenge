@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Chat Assistant</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>AI Chat Assistant</h1>
+            <p>Powered by OpenAI's GPT Models</p>
+        </header>
+
+        <div class="config-panel" id="configPanel">
+            <div class="config-header">
+                <h3>Configuration</h3>
+                <button class="close-btn" id="closeConfig">&times;</button>
+            </div>
+            <div class="config-content">
+                <div class="form-group">
+                    <label for="apiKey">OpenAI API Key:</label>
+                    <input type="password" id="apiKey" placeholder="sk-..." required>
+                    <small>Your API key is stored locally and never sent to our servers</small>
+                </div>
+                <div class="form-group">
+                    <label for="model">Model:</label>
+                    <select id="model">
+                        <option value="gpt-4.1-mini">GPT-4.1 Mini</option>
+                        <option value="gpt-4">GPT-4</option>
+                        <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="systemMessage">System Message:</label>
+                    <textarea id="systemMessage" rows="4" placeholder="You are a helpful AI assistant...">You are a helpful AI assistant. Provide clear, accurate, and concise responses to user queries.</textarea>
+                </div>
+                <button class="save-btn" id="saveConfig">Save Configuration</button>
+            </div>
+        </div>
+
+        <div class="chat-container">
+            <div class="chat-header">
+                <button class="config-btn" id="configBtn">⚙️ Settings</button>
+                <button class="clear-btn" id="clearBtn">🗑️ Clear Chat</button>
+            </div>
+            
+            <div class="chat-messages" id="chatMessages">
+                <div class="message assistant">
+                    <div class="message-avatar">🤖</div>
+                    <div class="message-content">
+                        <p>Hello! I'm your AI assistant. You can start chatting right away, or configure your API key in settings for personalized access.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chat-input-container">
+                <div class="chat-input">
+                    <textarea id="messageInput" placeholder="Type your message here..." rows="1"></textarea>
+                    <button id="sendBtn" disabled>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M22 2L11 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="status-bar" id="statusBar">
+            <span id="statusText">Ready</span>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

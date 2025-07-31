@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Chat Assistant - Demo</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: white;
+        }
+        
+        .container {
+            background: rgba(255,255,255,0.1);
+            padding: 30px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5rem;
+        }
+        
+        .feature {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 15px;
+            border-left: 4px solid #4facfe;
+        }
+        
+        .feature h3 {
+            margin-top: 0;
+            color: #4facfe;
+        }
+        
+        .buttons {
+            text-align: center;
+            margin: 40px 0;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 15px 30px;
+            text-decoration: none;
+            border-radius: 25px;
+            margin: 10px;
+            display: inline-block;
+            font-weight: 600;
+            transition: transform 0.3s ease;
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+        }
+        
+        .status {
+            background: rgba(255,255,255,0.2);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        code {
+            background: rgba(0,0,0,0.3);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Monaco', 'Menlo', monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🤖 AI Chat Assistant</h1>
+        
+        <div class="status">
+            <strong>Status:</strong> <span id="status">Checking servers...</span>
+        </div>
+        
+        <div class="feature">
+            <h3>🎨 Modern Interface</h3>
+            <p>Beautiful, responsive design with real-time streaming responses and smooth animations.</p>
+        </div>
+        
+        <div class="feature">
+            <h3>⚙️ Easy Configuration</h3>
+            <p>Simple settings panel to configure your OpenAI API key, choose models, and customize system messages.</p>
+        </div>
+        
+        <div class="feature">
+            <h3>🔒 Secure & Private</h3>
+            <p>Your API key is stored locally in your browser and never sent to any server except OpenAI.</p>
+        </div>
+        
+        <div class="feature">
+            <h3>📱 Responsive Design</h3>
+            <p>Works perfectly on desktop, tablet, and mobile devices with optimized layouts.</p>
+        </div>
+        
+        <div class="buttons">
+            <a href="http://localhost:3000" class="btn" id="frontendBtn">Open Chat App</a>
+            <a href="http://localhost:8000/docs" class="btn">View API Docs</a>
+        </div>
+        
+        <div class="feature">
+            <h3>🚀 Quick Start</h3>
+            <p>Run <code>python run_dev.py</code> to start both backend and frontend servers, or <code>python run_prod.py</code> for production mode.</p>
+        </div>
+    </div>
+
+    <script>
+        async function checkServers() {
+            const statusEl = document.getElementById('status');
+            
+            try {
+                // Check backend
+                const backendResponse = await fetch('http://localhost:8000/api/health');
+                if (backendResponse.ok) {
+                    statusEl.innerHTML = '✅ Backend running on port 8000';
+                    
+                    // Check if frontend is accessible
+                    try {
+                        const frontendResponse = await fetch('http://localhost:3000');
+                        if (frontendResponse.ok) {
+                            statusEl.innerHTML = '✅ Both servers running! Ready to chat.';
+                        } else {
+                            statusEl.innerHTML = '⚠️ Backend running, but frontend not accessible on port 3000';
+                        }
+                    } catch {
+                        statusEl.innerHTML = '⚠️ Backend running, but frontend not accessible on port 3000';
+                    }
+                } else {
+                    throw new Error('Backend not responding');
+                }
+            } catch (error) {
+                statusEl.innerHTML = '❌ Servers not running. Please start with <code>python run_dev.py</code>';
+            }
+        }
+        
+        // Check servers on load
+        checkServers();
+        
+        // Check again every 5 seconds
+        setInterval(checkServers, 5000);
+    </script>
+</body>
+</html>
