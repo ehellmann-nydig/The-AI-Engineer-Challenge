@@ -40,7 +40,7 @@ class ChatRequest(BaseModel):
     api_key: Optional[str] = None          # Optional OpenAI API key (can use env var)
 
 # Define the main chat endpoint that handles POST requests
-@app.post("/chat")
+@app.post("/api/chat")
 async def chat(request: ChatRequest):
     try:
         # Use API key from request or environment variable
@@ -103,10 +103,10 @@ async def chat(request: ChatRequest):
 # Define a root API endpoint
 @app.get("/")
 async def root():
-    return {"message": "OpenAI Chat API", "status": "running", "endpoints": ["/chat", "/health"]}
+    return {"message": "OpenAI Chat API", "status": "running", "endpoints": ["/api/chat", "/api/health"]}
 
 # Define a health check endpoint to verify API status
-@app.get("/health")
+@app.get("/api/health")
 async def health_check():
     return {"status": "ok"}
 
