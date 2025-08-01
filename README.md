@@ -204,6 +204,8 @@ This serves both the API and frontend on `http://localhost:8000`
 
 ### Vercel Link to Share
 
+**🌐 LIVE DEPLOYMENT**: https://the-ai-engineer-challenge-wine.vercel.app
+
 You'll want to make sure you share you *domains* hyperlink to ensure people can access your app!
 
 ![image](https://i.imgur.com/mpXIgIz.png)
